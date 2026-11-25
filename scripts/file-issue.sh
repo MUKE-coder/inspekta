@@ -25,8 +25,8 @@ check_private() {   # $1 = file. Prints offending lines, returns 1 if any.
   # URLs other than public docs/tools and localhost
   if grep -nEo 'https?://[^ )>"]+' "$1" \
        | grep -viE 'https?://(localhost|127\.0\.0\.1|([a-z0-9-]+\.)*(github\.com|githubusercontent\.com|gritframework\.dev|playwright\.dev|claude\.com|anthropic\.com|npmjs\.com|example\.(com|org)))' ; then bad=1; fi
-  # secrets / credentials
-  if grep -niE '(password|passwd|secret|api[_-]?key|token)[[:space:]]*[:=][[:space:]]*[^•*[:space:]<]{4,}' "$1"; then bad=1; fi
+  # secrets / credentials (shared, narrow scanner: ignores code and names like ForgotPassword)
+  if ! awk -f "$ROOT/scripts/lib/secret-scan.awk" "$1"; then bad=1; fi
   return $bad
 }
 

@@ -32,9 +32,9 @@ if grep -nE '\{\{[^}]*\}\}' report.md code-review.md fix-prompt.md 2>/dev/null; 
   echo "PLACEHOLDERS left above"; problems=$((problems+1))
 fi
 
-# 4. Possible raw passwords
-if grep -niE '(password|passwd|pwd)[[:space:]]*[:=][[:space:]]*[^•*[:space:]<]{4,}' ./*.md 2>/dev/null; then
-  echo "POSSIBLE PASSWORD above — redact it"; problems=$((problems+1))
+# 4. Possible raw credentials (skips code blocks, inline code and names like ForgotPassword)
+if ! awk -f "$ROOT/scripts/lib/secret-scan.awk" ./*.md; then
+  echo "POSSIBLE CREDENTIAL above — redact it (•••• or <demo password>)"; problems=$((problems+1))
 fi
 
 # 5. Self-review present (warning only)
