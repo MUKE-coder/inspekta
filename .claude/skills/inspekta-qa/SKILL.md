@@ -121,6 +121,24 @@ sites (admin panel, staff portal, parent portal). The task's **Login sites** and
 - **Permission matrix:** for every role, try each restricted area through the menu
   **and** through its direct URL. Also try another role's login site with this role's
   credentials. Record each check in the report's Role × Area matrix.
+- **API permission sweep: read the envelope total, not the status code.** For list
+  endpoints, build a Role × Endpoint matrix and record the **total from the response
+  envelope** (e.g. `meta.total`, `total`, `count`, `pagination.total_items`):
+  | Response for this role | Meaning |
+  |---|---|
+  | 401 / 403 | blocked ✅ (if the role shouldn't reach it) |
+  | **200 with total = 0** | **correct scoping ✅**: the API filtered to what this role owns. **Not a leak.** |
+  | 200 with rows this role shouldn't see (other tenant/school/user) | **leak ❌, Critical** |
+  | 200 with rows it *should* see | allowed ✅ |
+  - Never count the `data` array: with `page_size=1` (or any page size) it's capped by the
+    page, so its length says nothing about how much is reachable.
+  - Request with a small page size (e.g. `?page=1&page_size=1`) and read the total, then
+    inspect one row to confirm *whose* data it is (tenant/owner IDs).
+  - Counts shown in the UI (badges, "42 students", dashboard tiles) should match the same
+    total for that role. A mismatch is a finding.
+  - Run these checks from the role's own logged-in session (same cookies/token the UI
+    uses), via `browser_evaluate` with `fetch(…, { credentials: 'include' })`, so you test what
+    that user can actually reach.
 - Prefix action-log rows and screenshots with the role, e.g.
   `TC-07-teacher-staff-url-blocked.png`.
 

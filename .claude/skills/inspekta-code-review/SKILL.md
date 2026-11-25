@@ -37,6 +37,14 @@ long list of nits — group repeated issues ("same pattern in 9 handlers, e.g. �
 ## 3. Security
 - **AuthZ on every route**, not just authN — can user A read/edit user B's record (IDOR)?
 - Role checks server-side, not only hidden buttons in the UI
+- **List endpoints must scope the query, not just the response code.** Check that every
+  list/count query filters by the caller's tenant/owner (`Where("school_id = ?", user.SchoolID)`
+  or a scope/middleware that does it). Correct behaviour for an unauthorised-but-authenticated
+  caller is often **200 with `total: 0`**. That's not a bug. A **200 with other tenants'
+  rows** is. Make sure the envelope's `total` comes from the **same scoped query** as the
+  rows (a separate unscoped `Count()` leaks how many records exist, and misleads the UI)
+- When live testing produced a permission matrix, confirm each ❌ cell in code (missing scope,
+  middleware not applied to that route group) and each surprising ✅ (where the scoping lives)
 - Password hashing (bcrypt/argon2), JWT expiry/refresh, token storage (httpOnly cookies vs localStorage)
 - CORS not `*` with credentials; CSRF where cookies are used; rate limiting on auth endpoints
 - File uploads: type/size limits, private buckets, signed URLs (S3/R2/MinIO)
