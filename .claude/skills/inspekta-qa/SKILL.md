@@ -26,6 +26,35 @@ description: How Inspekta tests a live web app in the user's real Chrome via Pla
 6. Append the row to `action-log.md` immediately.
 7. If FAIL/PARTIAL → add a finding `QA-Fnn` to `report.md`.
 
+## When `browser_click` times out
+Symptom: `waiting for element to be visible, enabled and stable` repeats even though the
+element isn't moving. Common cause: a global `transition: all` (e.g. on `body`) or many
+running animations keep Playwright's "stable" check from ever settling.
+
+On the **first** such timeout, don't retry the same call. Instead:
+1. Check in-page that the element really is still and clickable (`browser_evaluate`):
+   ```js
+   (el) => {
+     const r = el.getBoundingClientRect();
+     const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+     return { rect: [r.x, r.y, r.width, r.height], covered: !el.contains(top),
+              animations: document.getAnimations().length, disabled: el.disabled };
+   }
+   ```
+   Not covered and not disabled → it's a tool problem, not an app problem.
+2. Click programmatically with `browser_evaluate`: `(el) => el.click()`.
+3. **Re-query after the click.** The component often re-renders, so any node you
+   captured before the click may be stale. Take a fresh `browser_snapshot` (or query the
+   DOM again) before judging whether the menu opened or the form submitted. Reading a
+   stale node is how you get a false "menu did not open".
+4. In `action-log.md`, note `(clicked via evaluate)` on that row. It skips some checks
+   a real click does, which is why step 1 checks for overlays and the disabled state.
+5. Don't report the timeout or the animations as a UI defect unless you've confirmed a
+   user-visible problem (see "Tool errors are not app defects" below).
+
+If the same app needs this repeatedly, note it in `knowledge/apps/<app>.md` so the next
+run uses the fallback straight away.
+
 ## Browser selection
 The task file gives a **Default browser** and optional per-role overrides. Map them to
 the browser servers in `.mcp.json` (the tools are prefixed `mcp__<server>__`):
