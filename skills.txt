@@ -1,0 +1,10 @@
+# Skills Inspekta installs with:  bash scripts/install-skills.sh
+# One line per source:  <source>  [skill, skill, ...]
+#   - no skill names  → install every skill in that source
+#   - skill names     → install only those (comma or space separated)
+# Add a line here to add a skill; everything installs in one go.
+
+https://github.com/mattpocock/skills         code-review, grill-me, grill-with-docs, handoff
+https://github.com/vercel-labs/agent-browser  agent-browser
+https://uizze.sh/
+MUKE-coder/grit-expert-skills

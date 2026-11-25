@@ -10,15 +10,8 @@ node -e 'process.exit(+process.versions.node.split(".")[0] >= 20 ? 0 : 1)' \
 command -v claude >/dev/null || echo "WARN: Claude Code CLI not found — install it before use"
 command -v grit >/dev/null || echo "NOTE: grit CLI not found — Grit skills will still install via npx"
 
-echo "==> Installing external skills into this project (.claude/skills)"
-add() { npx -y skills add "$@" || echo "WARN: failed: skills add $*"; }
-add https://github.com/mattpocock/skills --skill code-review
-add https://github.com/mattpocock/skills --skill grill-me
-add https://github.com/mattpocock/skills --skill grill-with-docs
-add https://github.com/mattpocock/skills --skill handoff
-add https://github.com/vercel-labs/agent-browser --skill agent-browser
-add https://uizze.sh/
-add MUKE-coder/grit-expert-skills
+echo "==> Installing all skills from skills.txt (one go, no prompts)"
+bash scripts/install-skills.sh "$@" || echo "WARN: some skills failed; re-run: bash scripts/install-skills.sh"
 
 echo "==> Pre-fetching Playwright MCP"
 npx -y @playwright/mcp@latest --help >/dev/null 2>&1 || echo "WARN: could not pre-fetch @playwright/mcp"

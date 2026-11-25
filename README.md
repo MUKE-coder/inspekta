@@ -43,7 +43,17 @@ cd inspekta
 bash scripts/setup.sh
 ```
 
-`setup.sh` installs these skills into the project:
+`setup.sh` installs every skill listed in [`skills.txt`](skills.txt) in one go, with no
+prompts. To install or update only the skills later:
+
+```bash
+bash scripts/install-skills.sh            # into this project (.claude/skills)
+bash scripts/install-skills.sh --global   # for all your projects (~/.claude/skills)
+bash scripts/install-skills.sh --list     # show what it will install
+```
+
+To add a skill, add one line to `skills.txt` (`<source> skill-a, skill-b`) and re-run.
+Current list:
 
 | Skill | Used for |
 |---|---|
@@ -275,7 +285,8 @@ CLAUDE.md                  agent brain: workflow, browser, recording, review rul
 .claude/agents/            code-reviewer subagent
 .claude/skills/            inspekta-qa, inspekta-ux-eye, inspekta-code-review, inspekta-report
 templates/                 report, code-review, action-log, task
-scripts/                   setup, new-run, collect-evidence, check-run, launch-browser
+scripts/                   setup, install-skills, new-run, collect-evidence, check-run, launch-browser
+skills.txt                 list of external skills to install
 tasks/examples/            example task file
 runs/                      outputs (one folder per run)
 ```
