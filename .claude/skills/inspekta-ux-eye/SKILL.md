@@ -64,6 +64,9 @@ a screenshot, *even if the checklist never mentioned it*. Use `design:design-cri
 - Navigation collapses sensibly; modals fit the viewport
 
 ## 11. Accessibility
+- **Test focus with real key presses** (`Tab`), never with programmatic `.focus()`. It
+  doesn't trigger `:focus-visible`, so it falsely shows "no focus ring". See "Tool errors
+  are not app defects" in `inspekta-qa`.
 - Keyboard: tab through a flow, visible focus ring, no traps, Esc closes modals
 - Images have alt; icon buttons have aria-label; headings in order; form errors announced
 
@@ -76,6 +79,12 @@ a screenshot, *even if the checklist never mentioned it*. Use `design:design-cri
 
 ## 14. Trust & polish
 - Favicon, page titles, branded emails/404s, consistent logo, no broken images
+
+## Evidence rule
+Every suggestion must rest on something a user would see or hear, confirmed in the page
+(screenshot, key-driven check, measured value). Don't base it on an automation tool's
+error message, such as a click timeout or "element not stable". Verify those first, as described in
+`inspekta-qa`.
 
 ## Suggestion format
 ```

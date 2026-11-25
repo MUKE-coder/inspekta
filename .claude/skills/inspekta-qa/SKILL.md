@@ -55,6 +55,35 @@ On the **first** such timeout, don't retry the same call. Instead:
 If the same app needs this repeatedly, note it in `knowledge/apps/<app>.md` so the next
 run uses the fallback straight away.
 
+## Tool errors are not app defects
+An automation error describes **the tool's model of the page**, not what a user
+experiences. Never turn one into a finding directly. Before any related finding reaches
+`report.md`, reproduce the user-visible symptom in-page and write that verification in
+the action-log row:
+
+| Tool says / you suspect | Verify with (`browser_evaluate`) | It's a real finding only if… |
+|---|---|---|
+| "element is not stable" / "it's animating" | `document.getAnimations().length` (page and element), and sample `getBoundingClientRect()` across a few `requestAnimationFrame` ticks | animations are actually running on that element and a user would notice them |
+| "element is covered / not visible" | `document.elementFromPoint(...)` at its centre; a screenshot | a real overlay blocks it for a user, too |
+| "no focus ring" | a **real key press** (see below) | Tab focus is still invisible |
+| "button does nothing" | re-query the DOM after the click; check network for the request | nothing changes for a user either |
+
+### Focus visibility: always use the keyboard
+Programmatic `el.focus()` does **not** trigger `:focus-visible`, which by design applies to
+keyboard focus. Measuring outlines after `.focus()` will wrongly show "no focus ring
+anywhere". Instead:
+1. Click on an empty part of the page (or focus `body`), then `browser_press_key` `Tab`.
+2. Check the focused element:
+   `() => { const el = document.activeElement; const cs = getComputedStyle(el);
+   return { tag: el.tagName, text: el.textContent?.trim().slice(0, 40),
+   focusVisible: el.matches(':focus-visible'), outline: cs.outlineStyle + ' ' + cs.outlineWidth,
+   boxShadow: cs.boxShadow }; }`
+3. Repeat `Tab` through the key controls and screenshot a few stops.
+A focus finding needs a key-driven reproduction **and** a screenshot.
+
+If you catch yourself nearly reporting a tool artefact, log it in `improvements.md` as a
+`false-positive` entry. That's how these rules get better.
+
 ## Browser selection
 The task file gives a **Default browser** and optional per-role overrides. Map them to
 the browser servers in `.mcp.json` (the tools are prefixed `mcp__<server>__`):
