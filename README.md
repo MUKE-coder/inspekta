@@ -100,6 +100,30 @@ from Google's account chooser. It **never types a Google password or 2FA code**:
 asks for one, it stops and hands over to you. It approves the OAuth consent screen only if
 the task says `Consent screen allowed: yes`.
 
+## Using it from VS Code (Claude Code extension)
+
+1. In VS Code, **File → Open Folder…** and open the `inspekta` folder itself, not a parent
+   folder. That's how the extension finds `CLAUDE.md`, `.claude/` (commands, skills,
+   subagent) and `.mcp.json` (browsers).
+2. Open the Claude Code panel and type `NEW TASK`, or pick `/new-task` from the slash
+   command menu. `/qa`, `/code-review` and `/report` work the same way.
+3. Check the browsers are connected: run `/mcp` in the panel. You should see `chrome`,
+   `edge` and `cdp`. They're pre-approved in `.claude/settings.json`, so the extension
+   doesn't need to ask.
+4. **If `/mcp` shows nothing or the browser tools are missing**, register the server
+   once from a terminal with the standalone CLI (`npm i -g @anthropic-ai/claude-code`),
+   then reload the window (**Developer: Reload Window**):
+   ```bash
+   cd inspekta
+   claude mcp list          # approves/loads the project's .mcp.json servers
+   # still missing? add Chrome at user level as a fallback:
+   claude mcp add chrome -s user -- npx @playwright/mcp@latest --extension --output-dir ./.playwright-out
+   ```
+5. Approvals (opening the browser, typing into forms, etc.) appear as prompts in the
+   panel. Keep the panel visible during a run.
+
+Windows: Claude Code runs the scripts with Git Bash, which you already have.
+
 ## Usage
 
 ```bash

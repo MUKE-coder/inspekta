@@ -27,6 +27,7 @@ Done. Remaining manual steps:
        browser (in each profile you want Inspekta to use).
      - cdp (Brave, Vivaldi, a dedicated profile):  bash scripts/launch-browser.sh brave myprofile
   2. Sign in to any Google accounts the test roles use, in that browser.
-  3. Open this folder with Claude Code:  claude
-  4. Approve the chrome / edge / cdp MCP servers when asked, then type:  NEW TASK
+  3. Open this folder with Claude Code: run  claude  here, or in VS Code use
+     File > Open Folder > inspekta and open the Claude Code panel
+  4. Run /mcp to check the chrome / edge / cdp servers are listed, then type:  NEW TASK
 EOF
