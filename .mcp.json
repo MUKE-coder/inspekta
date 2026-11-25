@@ -1,10 +1,31 @@
 {
   "mcpServers": {
-    "playwright": {
+    "chrome": {
       "command": "npx",
       "args": [
         "@playwright/mcp@latest",
         "--extension",
+        "--output-dir",
+        "./.playwright-out"
+      ]
+    },
+    "edge": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--extension",
+        "--browser",
+        "msedge",
+        "--output-dir",
+        "./.playwright-out"
+      ]
+    },
+    "cdp": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--cdp-endpoint",
+        "http://localhost:9222",
         "--output-dir",
         "./.playwright-out"
       ]

@@ -24,8 +24,12 @@ In short:
 1. **Intake.** Collect (use the AskUserQuestion tool for anything missing or ambiguous —
    the `grill-me` skill style: ask sharp questions once, not drip-feed):
    - **App directory** (absolute path to the codebase) — needed for code review.
-   - **Live app URL** + **sign-in URL**.
-   - **Demo credentials** (one or more roles, e.g. admin / normal user).
+   - **Login sites**: one or more sign-in URLs (admin panel, staff portal, parent portal…).
+   - **Roles & accounts**: for each role, which login site, which **auth method**
+     (password / Google / other SSO / magic link / OTP), the account, and which browser.
+   - **Browser**: which browser/profile session to use (`chrome`, `chrome:<profile>`,
+     `edge`, `cdp:<port>`). Ask if it isn't given; the session decides which Google
+     account and cookies Inspekta gets.
    - **Checklist** (pasted text, or a path to a `.md` file).
    - **Scope**: QA only, code review only, or both (default **both**).
    - Anything off-limits (e.g. "don't delete real records", "don't send emails").
@@ -44,10 +48,17 @@ with exactly where you are so a fresh session can resume.
 
 ## Browser rules (live testing)
 
-- Use the **Playwright MCP** server (`mcp__playwright__*`), configured in `.mcp.json` with
-  `--extension`, so you drive the user's **real Chrome profile** — real cookies, real
-  autofill behaviour, realistic login. The user must have the *Playwright Extension*
-  installed and approve the connection the first time (see README).
+- `.mcp.json` defines three browser servers: **`chrome`** and **`edge`** (Playwright MCP
+  `--extension`, the user's *real* browser session) and **`cdp`** (any Chromium browser
+  started with `scripts/launch-browser.sh`). Use the server the task names for each role
+  (`mcp__chrome__*`, `mcp__edge__*`, `mcp__cdp__*`). Never switch browsers silently; a
+  different browser means different cookies and a different Google account.
+- **Multiple roles / login sites**: follow "Roles & login sites" in `inspekta-qa`. Test each
+  role on its own login site, log out fully between roles, and fill the Role × Area
+  permission matrix.
+- **Google / SSO sign-in**: use the Google account that's already signed in to the
+  chosen browser and pick it from the account chooser. **Never type a Google password or
+  2FA code.** Hand those to the user. Approve OAuth consent only if the task allows it.
 - `agent-browser` skill is a fallback only if Playwright MCP is unavailable.
 - **Behave like a real user**: navigate via the UI (click links/menus) rather than typing
   deep URLs, type credentials into the real form with `slowly: true` for the first login,

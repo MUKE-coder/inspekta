@@ -21,9 +21,16 @@ batching up to 4 questions at once:
 
 - **App name** (used for the run slug)
 - **App directory** (absolute path to the codebase) — required unless scope is QA-only
-- **Live app URL** and **sign-in URL**
-- **Credentials** per role (email/username + password). Accept them in chat; never write
-  the raw password to disk.
+- **Login sites**: every sign-in URL (admin panel, staff portal, parent portal…) and the
+  auth methods on each
+- **Roles & accounts**: per role, its login site, auth method (password / google / sso /
+  magic-link / otp), account, browser override and test order. Accept passwords in
+  chat; never write a raw password to disk. Google roles need the Google account email
+  that is already signed in to the browser, not a password.
+- **Browser**: default session to use: `chrome`, `chrome:<profile>`, `edge`,
+  `edge:<profile>` or `cdp:<port>` (see README "Choosing the browser"). If the user
+  doesn't say, ask once and offer these as options.
+- **OAuth consent**: may Inspekta approve a Google/SSO consent screen? (default: ask)
 - **Checklist** (pasted or a file path)
 - **Scope**: `both` (default) / `qa` / `code`
 - **Constraints**: anything destructive that's off-limits, environments to avoid, focus areas
@@ -43,8 +50,9 @@ If the app directory has `.grit/project-profile.md`, read it — it describes th
 Convert the checklist into numbered test cases `TC-01…TC-NN` under **Test Plan** in
 `<run>/action-log.md`. Add `TC-X1…` for the standard senior-UX sweep (states,
 responsive, a11y, dark mode, console/network) even if not in the checklist.
-Create a task list (TaskCreate) with: Login, each checklist group, UX sweep, Code review,
-Report, Verify run.
+Group test cases by **role** in the role test order, and add a permission-check TC per
+role × restricted area. Create a task list (TaskCreate) with: one item per role (login +
+its checklist + permission checks), UX sweep, Code review, Report, Verify run.
 
 ## 4. Execute
 - Scope includes QA → follow `/qa`

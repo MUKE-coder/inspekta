@@ -22,6 +22,9 @@ FAIL/BLOCKED = 0) × 100, then subtract 10 per Critical and 5 per High finding (
 Other categories: judge 0–100 against the "what 100 looks like" column; one-line
 justification each.
 
+Any ❌ in the permission matrix where a role can reach data or actions it shouldn't is
+**Critical** (privilege escalation / data exposure).
+
 **Overall** = Σ(score × weight) / 100, rounded. **Caps:** any open Critical → overall
 max 59 (F); login broken → max 40.
 

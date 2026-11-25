@@ -6,7 +6,8 @@
 | **Date** | {{DATE}} |
 | **App URL** | {{APP_URL}} |
 | **Roles tested** | {{ROLES}} |
-| **Browser** | Chrome (user profile via Playwright MCP extension) |
+| **Login sites** | {{LOGIN_SITES}} |
+| **Browser(s)** | {{e.g. Chrome (Work profile) via extension; Edge for teacher}} |
 | **Viewports** | 1440×900, 390×844 |
 | **Reviewer** | Inspekta (Claude) |
 
@@ -40,6 +41,19 @@
 | TC-01 | {{}} | {{PASS/FAIL/PARTIAL/BLOCKED}} | [img](evidence/{{}}) | {{QA-F01}} |
 
 Pass rate: {{n}}/{{N}} ({{%}}). Full step-by-step log: [action-log.md](action-log.md).
+
+## Roles & access
+
+| Role | Login site | Auth method | Login result | Checklist pass | Notes |
+|---|---|---|---|---|---|
+| {{}} | {{}} | {{}} | {{PASS/FAIL}} | {{n/N}} | {{}} |
+
+**Permission matrix:** ✅ allowed as expected · ⛔ blocked as expected · ❌ wrong (finding)
+
+| Area / action | {{role 1}} | {{role 2}} | {{role 3}} |
+|---|---|---|---|
+| {{/admin (menu)}} | {{}} | {{}} | {{}} |
+| {{/admin (direct URL)}} | {{}} | {{}} | {{}} |
 
 ## Findings
 

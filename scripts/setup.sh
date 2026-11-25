@@ -28,9 +28,12 @@ chmod +x scripts/*.sh
 
 cat <<'EOF'
 
-Done. Remaining manual step:
-  1. Install the "Playwright Extension" (Playwright MCP Bridge) in your normal Chrome
-     — see https://github.com/microsoft/playwright-mcp (extension README).
-  2. Open this folder with Claude Code:  claude
-  3. Approve the "playwright" MCP server when asked, then type:  NEW TASK
+Done. Remaining manual steps:
+  1. Pick your browser (README "Choosing the browser"):
+     - chrome / edge: install the "Playwright Extension" (Playwright MCP Bridge) in that
+       browser (in each profile you want Inspekta to use).
+     - cdp (Brave, Vivaldi, a dedicated profile):  bash scripts/launch-browser.sh brave myprofile
+  2. Sign in to any Google accounts the test roles use, in that browser.
+  3. Open this folder with Claude Code:  claude
+  4. Approve the chrome / edge / cdp MCP servers when asked, then type:  NEW TASK
 EOF

@@ -26,6 +26,59 @@ description: How Inspekta tests a live web app in the user's real Chrome via Pla
 6. Append the row to `action-log.md` immediately.
 7. If FAIL/PARTIAL → add a finding `QA-Fnn` to `report.md`.
 
+## Browser selection
+The task file gives a **Default browser** and optional per-role overrides. Map them to
+the browser servers in `.mcp.json` (the tools are prefixed `mcp__<server>__`):
+
+| Task value | Server / tools | Meaning |
+|---|---|---|
+| `chrome` or `chrome:<profile>` | `mcp__chrome__*` | User's real Chrome via the Playwright Extension. For a named profile, ask the user to have that profile's window focused and approve the extension from it |
+| `edge` or `edge:<profile>` | `mcp__edge__*` | User's real Edge via the Playwright Extension |
+| `cdp` / `cdp:<port>` | `mcp__cdp__*` | Any Chromium browser started with `scripts/launch-browser.sh` (Brave, Vivaldi, a dedicated Inspekta profile). The default port is 9222; for another port, ask the user to update `.mcp.json` |
+
+- Before the first action in each browser, confirm the session: take a screenshot of a
+  neutral page (or the app's sign-in page) and check that it's the expected browser/profile.
+  If Google sign-in is planned, open `https://myaccount.google.com` *only to read* which
+  account is signed in (don't change anything), or check the Google account chooser later.
+- Firefox and Safari can't share a real session through these tools. If the task asks
+  for one, say so and suggest a Chromium browser or a `cdp` testing profile.
+- If the requested browser server won't connect after one retry, stop and ask. Don't
+  quietly switch to another browser; its session (cookies, Google account) is different.
+
+## Roles & login sites
+Many apps have several roles (admin, headteacher, teacher, parent…) and several login
+sites (admin panel, staff portal, parent portal). The task's **Login sites** and
+**Roles & accounts** tables say which role uses which site, auth method and browser.
+
+- Test roles in the given **order**. For each role: log in on *its* login site → run the
+  checklist items tagged for that role → run that role's permission checks → log out.
+- **Session isolation:** between roles in the same browser, log out fully and confirm
+  the protected page redirects to sign-in. If logout leaves the session alive, that's a
+  finding. Then continue. If two roles must be signed in at once (e.g. teacher publishes
+  results and the parent views them), use different browsers or profiles from the table,
+  or ask the user.
+- **Permission matrix:** for every role, try each restricted area through the menu
+  **and** through its direct URL. Also try another role's login site with this role's
+  credentials. Record each check in the report's Role × Area matrix.
+- Prefix action-log rows and screenshots with the role, e.g.
+  `TC-07-teacher-staff-url-blocked.png`.
+
+## Auth methods
+- **password**: type it slowly into the real form. Never write it to a file.
+- **google** ("Sign in with Google"): click the app's Google button, then pick the
+  **account named in the task** from Google's account chooser. It's already signed in
+  to the browser. **Never type a Google password or 2FA code.** If Google asks for a
+  password, verification or a CAPTCHA, stop and ask the user to finish it in the
+  browser. Only approve the OAuth **consent screen** if the task says
+  `Consent screen allowed: yes`; otherwise ask first. Note the scopes requested in the
+  report. If the wrong account gets used, or the chooser is skipped while several
+  accounts are signed in, that's a finding.
+- **microsoft / github / other SSO**: same rules as Google.
+- **magic-link / otp**: if the task names a dev mail inbox (e.g. Mailhog for Grit apps),
+  read the code or link there. Otherwise ask the user to read it to you. Also test a
+  wrong code and an expired code.
+- **2FA (TOTP / SMS)**: always hand it to the user.
+
 ## Realistic login checklist (always, even if not asked)
 - Page loads logged-out; autofill from the user's browser behaves sensibly
 - Wrong password → clear, non-revealing error; field not cleared unnecessarily
