@@ -17,8 +17,29 @@ description: Scoring rubrics (weighted 0–100 + A–F grade) and report-writing
 | Performance (perceived + network) | 10 | Fast first content, no slow/duplicate calls, no console errors |
 | Responsive / mobile | 5 | Works well at 390px with no horizontal scroll |
 
-**Functionality score** starts from checklist pass rate (PASS = 1, PARTIAL = 0.5,
-FAIL/BLOCKED = 0) × 100, then subtract 10 per Critical and 5 per High finding (min 0).
+**Functionality** is reported as **two figures**, so readers see both the measurement and the judgement:
+
+1. **Checklist pass rate** (the measurement):
+   `(PASS + 0.5 × PARTIAL) / scored items × 100`.
+   FAIL = 0. BLOCKED **by the app** (e.g. a page crashes) = 0. BLOCKED **by Inspekta's
+   environment** (browser couldn't connect, missing credentials, user skipped it) is left out
+   of the denominator and listed separately. That isn't the app's fault.
+2. **Functionality score** (what goes into the weighted total) = pass rate minus a small,
+   **bounded** severity adjustment:
+   - −3 per Critical and −1.5 per High finding **that isn't already a FAIL checklist item**
+     (e.g. found in the permission matrix or UX sweep). A failed checklist item has already
+     cost its points, so don't charge it twice.
+   - The adjustment is **capped at −15 points**. Floor 0.
+
+   Example: pass rate 47.7%, three Critical and nine High findings off the checklist →
+   adjustment min(15, 9 + 13.5) = −15 → Functionality **33**.
+
+Severity's real weight comes from the **overall caps** below (any open Critical → max 59).
+The bounded adjustment only separates "mostly works but has serious holes" from "mostly
+works and is clean". Never apply a severity penalty other than these two mechanisms.
+
+In the scorecard row write both: `pass rate 47.7% (21/44), severity adj −15`.
+
 Other categories: judge 0–100 against the "what 100 looks like" column; one-line
 justification each.
 

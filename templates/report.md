@@ -16,6 +16,8 @@
 
 **Verdict:** {{Ready / Ready with fixes / Not ready}}
 
+**Checklist pass rate:** {{x% (n/N scored; m blocked by environment, not counted)}}
+
 | Report | Score | Grade |
 |---|---|---|
 | Live QA & UI/UX | {{QA_SCORE}}/100 | {{QA_GRADE}} |
@@ -25,7 +27,7 @@
 
 | Category | Weight | Score | Why |
 |---|---|---|---|
-| Functionality (checklist) | 30 | {{}} | {{}} |
+| Functionality (checklist) | 30 | {{}} | {{pass rate x% (n/N), severity adj −y — see rubric}} |
 | UX & flows | 20 | {{}} | {{}} |
 | Visual design & consistency | 15 | {{}} | {{}} |
 | States & resilience | 10 | {{}} | {{}} |
