@@ -37,6 +37,17 @@ if ! awk -f "$ROOT/scripts/lib/secret-scan.awk" ./*.md; then
   echo "POSSIBLE CREDENTIAL above — redact it (•••• or <demo password>)"; problems=$((problems+1))
 fi
 
+# 5b. Cleanup ledger: nothing may be left PENDING
+if [ -f created.md ]; then
+  pending=$(grep -cE '\|[[:space:]]*PENDING[[:space:]]*\|' created.md || true)
+  residue=$(grep -cE '\|[[:space:]]*RESIDUE[[:space:]]*\|' created.md || true)
+  if [ "${pending:-0}" -gt 0 ]; then
+    echo "PENDING  $pending record(s) in created.md not cleaned up or verified — finish cleanup (/report step 1b)"
+    problems=$((problems+1))
+  fi
+  [ "${residue:-0}" -gt 0 ] && echo "RESIDUE  $residue record(s) left in the app — make sure they're in report.md and fix-prompt.md (warning)"
+fi
+
 # 5. Self-review present (warning only)
 if [ ! -f improvements.md ]; then echo "UNUSED   improvements.md missing (warning)"
 elif ! grep -q '^### \[' improvements.md && ! grep -qi 'no issues\|went smoothly\|nothing to report' improvements.md; then

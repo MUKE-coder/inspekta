@@ -16,6 +16,8 @@ Run folder: $ARGUMENTS (default: newest in `runs/`).
      `| Priority | ID | Severity | Title | Where | Linked IDs |`, sorted Critical → Low,
      with linked pairs (QA-F03 ↔ CR-04) on adjacent rows. UX-S items go last unless
      their severity is High. Priority is 1, 2, 3…
+   - `{{RESIDUE}}`: the `RESIDUE` rows from `<run>/created.md` as a table
+     `| Resource | Identifier | Why it couldn't be removed | Finding |`, or "None".
 3. No credentials in this file, not even redacted ones. The maintainer doesn't need them.
 4. Leave no `{{…}}` placeholders. Then tell the user:
    "Fix prompt ready: `<run>/fix-prompt.md`. Copy the box into the AI in your app's repo."

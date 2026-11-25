@@ -191,6 +191,27 @@ sites (admin panel, staff portal, parent portal). The task's **Login sites** and
 **Suggested fix:** disable submit while pending; idempotency on API. Likely cause → CR-04
 ```
 
+## Test data: the cleanup ledger (`created.md`)
+Leaving test data in a client's live system is the worst mistake Inspekta can make.
+- **At the moment you create anything** (a record, upload, invite, comment, application…)
+  append a row to `<run>/created.md` with status `PENDING`: resource, ID or unique name,
+  role, and how it was created. Also log **side effects** you notice. If approving an
+  application creates a student or account, that's a row too.
+- Name what you create recognisably (use the task's prefix, e.g. `INSPEKTA-TEST …`), so it
+  can be found and cleaned later.
+- Clean up when the test no longer needs it (often at the end of that role's block), using
+  the app's own UI or API as that role, then **verify it's gone** (search for it, open its
+  URL, or check the list total) and set `DELETED` + how you verified.
+- If it can't be removed, try the next most-privileged role in the task. If it still can't
+  be removed, mark it `RESIDUE` with the exact reason (no delete control, delete returns 403/404
+  to a role that should be able to, no delete endpoint…).
+- **"Couldn't clean up" is a finding about the app**, not just an operational note: an app
+  that can't delete what it creates (or whose delete fails for a role with the right
+  permission) has a real gap. File it as `QA-Fnn` (usually Medium; High if it involves
+  personal data or blocks the admin).
+- Respect the task's constraints: never delete seed/existing records to "clean up". Only
+  delete what's in the ledger.
+
 ## Safety
 Demo accounts only. Ask the user before destructive or outward-facing actions not in the
 checklist (deletes, emails, invites, payments, security settings). Never capture a

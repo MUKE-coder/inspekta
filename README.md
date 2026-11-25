@@ -16,6 +16,7 @@ runs/acme-crm-2026-11-25-1030/
 ├── action-log.md     # Every step: action, expected, observed, result, evidence
 ├── fix-prompt.md     # Copy-paste prompt for your app's AI to verify & fix the findings
 ├── improvements.md   # Inspekta's self-review → filed as GitHub issues on this repo
+├── created.md        # Cleanup ledger: every record the run created, verified deleted or listed as residue
 ├── task.md           # Intake (credentials redacted)
 └── evidence/         # Screenshots referenced from the reports
 ```

@@ -26,6 +26,11 @@ IDs: QA-Fnn = bug seen live · UX-Snn = senior UI/UX suggestion (beyond the chec
 CR-nn = code review finding. "QA-F03 ↔ CR-04" means the live bug's likely root cause is
 that code finding: fix the root cause once, not the symptom twice.
 
+## Test data left in the live app
+{{RESIDUE}}
+<!-- Inspekta couldn't remove these records it created while testing. Remove them by hand
+     (or ask me), and fix the linked finding so the app can delete what it creates. "None" if empty. -->
+
 ## How to work
 1. **Verify first.** For each finding, open the cited file/route and confirm the problem
    is real. Inspekta reads code without running it and sees the live app from outside,

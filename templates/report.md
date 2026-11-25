@@ -81,6 +81,14 @@ Pass rate: {{n}}/{{N}} ({{%}}). Full step-by-step log: [action-log.md](action-lo
 |---|---|---|---|---|
 | {{}} | {{}} | {{}} | {{}} | {{}} |
 
+## Test data & cleanup
+
+| Resource | Identifier | Created by | Final status | Notes |
+|---|---|---|---|---|
+| {{}} | {{}} | {{role}} | {{DELETED / RESIDUE / KEPT}} | {{how verified / why it remains}} |
+
+**Residue left in the app:** {{none / list with the reason each couldn't be removed and the finding ID}}
+
 ## What works well
 - {{}}
 

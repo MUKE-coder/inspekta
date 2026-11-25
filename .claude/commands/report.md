@@ -6,6 +6,11 @@ argument-hint: [run folder]
 Load `inspekta-report`. Run folder: $ARGUMENTS (default: newest in `runs/`).
 
 1. Run `bash scripts/collect-evidence.sh <run>` one last time.
+1b. **Verify the cleanup ledger.** For every `PENDING` row in `<run>/created.md`: delete it
+   (as described in `inspekta-qa`, "Test data") or confirm it's already gone, and set `DELETED` with
+   how you verified it. If it can't be removed, set `RESIDUE` with the reason and make sure there's a
+   finding for it. Copy the final table into report.md's "Test data & cleanup" section.
+   No row may stay `PENDING`.
 2. Complete `report.md`: executive summary, scorecard (weighted 0–100 + grade),
    checklist results table, findings (sorted by severity), **Senior UI/UX Suggestions
    (beyond the checklist)**, what works well, prioritised next steps.
