@@ -37,6 +37,12 @@ if grep -niE '(password|passwd|pwd)[[:space:]]*[:=][[:space:]]*[^•*[:space:]<]
   echo "POSSIBLE PASSWORD above — redact it"; problems=$((problems+1))
 fi
 
+# 5. Self-review present (warning only)
+if [ ! -f improvements.md ]; then echo "UNUSED   improvements.md missing (warning)"
+elif ! grep -q '^### \[' improvements.md && ! grep -qi 'no issues\|went smoothly\|nothing to report' improvements.md; then
+  echo "NOTE     improvements.md has no entries. Log friction/ideas, or say the run was smooth (warning)"
+fi
+
 if [ "$problems" -eq 0 ]; then
   echo "OK  $(basename "$RUN") — $(ls evidence 2>/dev/null | wc -l | tr -d ' ') evidence file(s)"
 else

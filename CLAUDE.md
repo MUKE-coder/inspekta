@@ -53,6 +53,16 @@ the user's machine or the target repo; some are blocked in settings anyway.
 after using a fix prompt), read it. Re-test its "Re-test checklist" first, and report each
 earlier finding as Fixed / Still open / Regressed alongside the new findings.
 
+**Self-improvement (every run):** load `inspekta-self-improve`.
+- At intake, read `knowledge/apps/<app-slug>.md` if it exists (what earlier runs learned about this app).
+- During the run, whenever something slows you down, confuses you, breaks, or could be done
+  better *by Inspekta*, append it to `<run>/improvements.md` **at once**. That includes
+  retries, workarounds, permission prompts, unclear instructions, missing skills, report
+  problems, false positives and ideas. App bugs don't belong there.
+- At the end, `/report` runs `/file-issues`: anonymised GitHub issues on Inspekta's public
+  repo (never client names, URLs, logins or code), plus an update to the app notes.
+- `/improve` is the other half: fixing those issues in this repo.
+
 If context is getting long mid-run, use the `handoff` skill: write `runs/<run>/handoff.md`
 with exactly where you are so a fresh session can resume.
 

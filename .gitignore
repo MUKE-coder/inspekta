@@ -14,3 +14,8 @@ tasks/*
 node_modules/
 .DS_Store
 .claude/settings.local.json
+
+# Self-improvement: per-app notes describe client apps; inbox may hold unfiled issues
+knowledge/apps/*
+!knowledge/apps/.gitkeep
+improvements/

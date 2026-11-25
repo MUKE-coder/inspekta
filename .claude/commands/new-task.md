@@ -16,6 +16,10 @@ Find the brief, in this order:
    "Known issues" as new findings; note whether they're still present.
 3. Otherwise collect everything from the user.
 
+Read `knowledge/apps/<app-slug>.md` if it exists: notes earlier runs left about this app
+(login quirks, navigation, widgets, known non-bugs). Use them, but re-verify anything that
+could have changed.
+
 If `<app dir>/.inspekta/fix-summary.md` exists, this is a **re-test**: add its
 "Re-test checklist" as the first test cases (`TC-R01…`) and, in the report, mark each
 earlier finding Fixed / Still open / Regressed.

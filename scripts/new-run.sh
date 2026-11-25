@@ -16,7 +16,7 @@ fi
 
 NAME_ESC="$(printf '%s' "$NAME" | sed 's/[|&\\]/\\&/g')"
 mkdir -p "$RUN/evidence"
-for f in report.md code-review.md action-log.md task.md; do
+for f in report.md code-review.md action-log.md task.md improvements.md; do
   sed -e "s|{{RUN_ID}}|$RUN_ID|g" \
       -e "s|{{DATE}}|$(date +%Y-%m-%d)|g" \
       -e "s|{{APP_NAME}}|$NAME_ESC|g" \

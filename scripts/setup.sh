@@ -13,6 +13,14 @@ command -v grit >/dev/null || echo "NOTE: grit CLI not found — Grit skills wil
 echo "==> Installing all skills from skills.txt (one go, no prompts)"
 bash scripts/install-skills.sh "$@" || echo "WARN: some skills failed; re-run: bash scripts/install-skills.sh"
 
+echo "==> Checking GitHub CLI (for self-reported issues)"
+if command -v gh >/dev/null && gh auth status >/dev/null 2>&1; then
+  echo "gh OK — Inspekta can file improvement issues"
+else
+  echo "NOTE: install GitHub CLI (https://cli.github.com) and run: gh auth login"
+  echo "      Until then, self-reported issues are saved to improvements/inbox/"
+fi
+
 echo "==> Pre-fetching Playwright MCP"
 npx -y @playwright/mcp@latest --help >/dev/null 2>&1 || echo "WARN: could not pre-fetch @playwright/mcp"
 

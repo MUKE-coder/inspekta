@@ -12,7 +12,9 @@ Load `inspekta-report`. Run folder: $ARGUMENTS (default: newest in `runs/`).
 3. Make sure `code-review.md` is complete and its score appears in the `report.md` summary.
 4. Write `<run>/fix-prompt.md` by following `/fix-prompt`: a copy-paste prompt for the
    app's maintainer AI to verify and fix every finding in priority order.
-5. Run `bash scripts/check-run.sh <run>` — every referenced image exists, no raw
+5. Run `/file-issues` for this run: anonymised self-improvement issues on Inspekta's repo,
+   plus an update to `knowledge/apps/<app-slug>.md`.
+6. Run `bash scripts/check-run.sh <run>` — every referenced image exists, no raw
    passwords, no empty template placeholders, fix prompt present. Fix and re-run until clean.
-6. Reply to the user with the scores, top 3 issues, the folder path, and
-   "Fix prompt: `<run>/fix-prompt.md`".
+7. Reply to the user with the scores, top 3 issues, the folder path,
+   "Fix prompt: `<run>/fix-prompt.md`", and the Inspekta issues filed (titles + links).

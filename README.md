@@ -15,6 +15,7 @@ runs/acme-crm-2026-11-25-1030/
 ├── code-review.md    # Senior code review, scored 0–100, grade A–F
 ├── action-log.md     # Every step: action, expected, observed, result, evidence
 ├── fix-prompt.md     # Copy-paste prompt for your app's AI to verify & fix the findings
+├── improvements.md   # Inspekta's self-review → filed as GitHub issues on this repo
 ├── task.md           # Intake (credentials redacted)
 └── evidence/         # Screenshots referenced from the reports
 ```
@@ -279,7 +280,7 @@ When done, show me the file path, a summary (number of roles, login sites, auth 
 areas, checklist items) and anything you couldn't determine and need from me.
 ````
 
-Other commands: `/qa`, `/code-review`, `/report`, `/fix-prompt` (each defaults to the newest run).
+Other commands: `/qa`, `/code-review`, `/report`, `/fix-prompt`, `/file-issues` (each defaults to the newest run), and `/improve` to work on Inspekta itself.
 
 ## After the review: fix prompt
 
@@ -297,6 +298,48 @@ Then run Inspekta again on the same app (`/new-task <app dir>`). It sees the fix
 re-tests those items first, and marks each earlier finding Fixed / Still open / Regressed.
 
 For a run that finished before this feature existed: `/fix-prompt runs/<run-folder>`.
+
+## Self-improving: Inspekta files issues about itself
+
+Every run, Inspekta also reviews **itself**. Whenever something slows it down or could
+work better, it notes it in `runs/<run>/improvements.md` straight away:
+
+| Label | What it captures |
+|---|---|
+| `friction` | retries, workarounds, confusing flows it had to fight through |
+| `skill-gap` | missing, unclear or wrong instructions/skills |
+| `tooling` | browser connection, scripts, settings, permission prompts |
+| `report-quality` | templates, scoring, fix prompt |
+| `false-positive` | something it nearly reported that wasn't a problem, and what misled it |
+| `idea` | new checks or capabilities worth adding |
+
+At the end of the run (`/report`, or `/file-issues` on its own) it files them as
+**GitHub issues on this repo**, labelled `self-reported` plus type and `priority:*`.
+If the same problem happens again, it comments "seen again" on the existing issue instead
+of opening a duplicate, so recurring problems rise to the top.
+
+**Privacy:** this repo is public, so issues are anonymised: no client app names,
+URLs, emails, logins, screenshots or code. `scripts/file-issue.sh` refuses any body that
+contains emails, non-public URLs or secrets.
+
+**App notes:** Inspekta also keeps `knowledge/apps/<app>.md` (local, gitignored) with what it
+learned about each app, such as login quirks, navigation and known non-bugs. It reads them at the
+start of the next run on that app.
+
+**Fixing the issues:** open Inspekta and run
+
+```
+/improve            # lists open self-reported issues by priority & recurrence; you pick
+/improve 12 15      # fix specific issues
+```
+
+It edits Inspekta's own skills, commands, templates and scripts, commits with
+`fixes #n`, and asks before pushing.
+
+Setup: install the [GitHub CLI](https://cli.github.com) and run `gh auth login` once.
+Without it, issues are saved to `improvements/inbox/`; file them later with
+`bash scripts/file-issue.sh --flush`. Labels are created by `bash scripts/setup-labels.sh`
+(already done for MUKE-coder/inspekta).
 
 ## Permissions (no approval prompts)
 
@@ -358,11 +401,13 @@ Full rubric: `.claude/skills/inspekta-report/SKILL.md`.
 CLAUDE.md                  agent brain: workflow, browser, recording, review rules
 .mcp.json                  browser servers: chrome, edge (extension), cdp
 .claude/settings.json      tool permissions
-.claude/commands/          /new-task /qa /code-review /report /fix-prompt
+.claude/commands/          /new-task /qa /code-review /report /fix-prompt /file-issues /improve
 .claude/agents/            code-reviewer subagent
 .claude/skills/            inspekta-qa, inspekta-ux-eye, inspekta-code-review, inspekta-report
-templates/                 report, code-review, action-log, task, fix-prompt
-scripts/                   setup, install-skills, new-run, collect-evidence, check-run, launch-browser
+templates/                 report, code-review, action-log, task, fix-prompt, improvements
+knowledge/apps/            per-app notes from earlier runs (local, gitignored)
+scripts/                   setup, install-skills, new-run, collect-evidence, check-run, launch-browser,
+                           file-issue, setup-labels
 skills.txt                 list of external skills to install
 tasks/examples/            example task file
 runs/                      outputs (one folder per run)
