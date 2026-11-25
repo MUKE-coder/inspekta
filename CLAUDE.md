@@ -39,7 +39,19 @@ In short:
    `user: demo@x.com / pass: ••••`). Never write raw passwords to any file.
 4. **Plan.** Turn the checklist into numbered test cases (`TC-01…`) in `action-log.md`.
 5. Run **QA** (`/qa`), then **code review** (`/code-review`), then **final report** (`/report`).
-6. Finish by telling the user: overall QA score, code score, top 3 issues, and the run path.
+   `/report` also writes **`fix-prompt.md`**: a copy-paste prompt for the app maintainer's
+   AI to verify the findings and fix them in priority order (see `/fix-prompt`).
+6. Finish by telling the user: overall QA score, code score, top 3 issues, the run path,
+   and the path to `fix-prompt.md`.
+
+**Permissions:** `.claude/settings.json` pre-approves the browser servers, file tools and
+shell, so test runs don't stop for approval. That makes your own judgement the safety net:
+the rules under "Safety" below still apply in full. Never run destructive commands on
+the user's machine or the target repo; some are blocked in settings anyway.
+
+**Re-test runs:** if `<app>/.inspekta/fix-summary.md` exists (written by the maintainer
+after using a fix prompt), read it. Re-test its "Re-test checklist" first, and report each
+earlier finding as Fixed / Still open / Regressed alongside the new findings.
 
 If context is getting long mid-run, use the `handoff` skill: write `runs/<run>/handoff.md`
 with exactly where you are so a fresh session can resume.

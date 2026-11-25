@@ -16,6 +16,10 @@ Find the brief, in this order:
    "Known issues" as new findings; note whether they're still present.
 3. Otherwise collect everything from the user.
 
+If `<app dir>/.inspekta/fix-summary.md` exists, this is a **re-test**: add its
+"Re-test checklist" as the first test cases (`TC-R01…`) and, in the report, mark each
+earlier finding Fixed / Still open / Regressed.
+
 Collect anything still missing from the user. Use the **AskUserQuestion** tool for anything missing,
 batching up to 4 questions at once:
 

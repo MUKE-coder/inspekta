@@ -14,6 +14,7 @@ runs/acme-crm-2026-11-25-1030/
 ├── report.md         # Live QA + UI/UX review, scored 0–100, grade A–F
 ├── code-review.md    # Senior code review, scored 0–100, grade A–F
 ├── action-log.md     # Every step: action, expected, observed, result, evidence
+├── fix-prompt.md     # Copy-paste prompt for your app's AI to verify & fix the findings
 ├── task.md           # Intake (credentials redacted)
 └── evidence/         # Screenshots referenced from the reports
 ```
@@ -278,7 +279,59 @@ When done, show me the file path, a summary (number of roles, login sites, auth 
 areas, checklist items) and anything you couldn't determine and need from me.
 ````
 
-Other commands: `/qa`, `/code-review`, `/report` (each defaults to the newest run).
+Other commands: `/qa`, `/code-review`, `/report`, `/fix-prompt` (each defaults to the newest run).
+
+## After the review: fix prompt
+
+Every run ends with **`fix-prompt.md`** in the run folder. Copy the box in it into the AI
+that maintains your app (in the app's repo). That AI will:
+
+1. read the QA report, code review, test log and screenshots (absolute paths are filled in)
+2. verify each finding against the code, and reject false positives with a reason
+3. ask you once about risky fixes (migrations, auth/role changes, product decisions)
+4. fix everything in priority order (Critical → Low, then UI/UX suggestions), fixing
+   linked bugs at the root cause, with tests and one commit per finding
+5. write `.inspekta/fix-summary.md` with the status of each finding and a **re-test checklist**
+
+Then run Inspekta again on the same app (`/new-task <app dir>`). It sees the fix summary,
+re-tests those items first, and marks each earlier finding Fixed / Still open / Regressed.
+
+For a run that finished before this feature existed: `/fix-prompt runs/<run-folder>`.
+
+## Permissions (no approval prompts)
+
+`.claude/settings.json` lets Inspekta run a whole test without asking:
+
+- all browser tools on the `chrome`, `edge` and `cdp` servers
+- reading/writing files, search, skills, subagents, and shell commands
+- file edits auto-accepted (`defaultMode: acceptEdits`)
+
+These are still blocked: `git push`, `git reset --hard`, `git clean`, recursive deletes,
+`grit migrate/seed/deploy` and `docker compose down`. Inspekta's own rules still make it
+ask before deleting app data, sending real emails, or other outward-facing actions not
+in your checklist.
+
+**Reading your app's code without prompts.** Claude Code asks before reading folders
+outside `inspekta`. Allow your projects folder once by creating
+`.claude/settings.local.json` (gitignored, specific to your machine):
+
+```json
+{
+  "permissions": {
+    "additionalDirectories": ["D:/PROJECTS"]
+  }
+}
+```
+
+**Still getting prompts?**
+- Reload VS Code (**Developer: Reload Window**) after pulling, so settings are re-read.
+- Check that VS Code opened the `inspekta` folder itself; settings only apply there.
+- Your user settings (`~/.claude/settings.json`) can override these. Remove any
+  `ask` rules for `mcp__…` there.
+- Fully hands-off (no prompts at all, at your own risk): in VS Code settings set
+  **Claude Code: Initial Permission Mode** to *bypass permissions*, or run
+  `claude --dangerously-skip-permissions` in a terminal. Only do this in the
+  `inspekta` folder with demo accounts.
 
 ## Scoring
 
@@ -305,10 +358,10 @@ Full rubric: `.claude/skills/inspekta-report/SKILL.md`.
 CLAUDE.md                  agent brain: workflow, browser, recording, review rules
 .mcp.json                  browser servers: chrome, edge (extension), cdp
 .claude/settings.json      tool permissions
-.claude/commands/          /new-task /qa /code-review /report
+.claude/commands/          /new-task /qa /code-review /report /fix-prompt
 .claude/agents/            code-reviewer subagent
 .claude/skills/            inspekta-qa, inspekta-ux-eye, inspekta-code-review, inspekta-report
-templates/                 report, code-review, action-log, task
+templates/                 report, code-review, action-log, task, fix-prompt
 scripts/                   setup, install-skills, new-run, collect-evidence, check-run, launch-browser
 skills.txt                 list of external skills to install
 tasks/examples/            example task file

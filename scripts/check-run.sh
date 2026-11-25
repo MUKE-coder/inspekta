@@ -27,7 +27,8 @@ if [ -d evidence ]; then
 fi
 
 # 3. Leftover template placeholders
-if grep -nE '\{\{[^}]*\}\}' report.md code-review.md 2>/dev/null; then
+[ -f fix-prompt.md ] || { echo "MISSING  fix-prompt.md (run /fix-prompt)"; problems=$((problems+1)); }
+if grep -nE '\{\{[^}]*\}\}' report.md code-review.md fix-prompt.md 2>/dev/null; then
   echo "PLACEHOLDERS left above"; problems=$((problems+1))
 fi
 

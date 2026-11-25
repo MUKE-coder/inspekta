@@ -10,6 +10,9 @@ Load `inspekta-report`. Run folder: $ARGUMENTS (default: newest in `runs/`).
    checklist results table, findings (sorted by severity), **Senior UI/UX Suggestions
    (beyond the checklist)**, what works well, prioritised next steps.
 3. Make sure `code-review.md` is complete and its score appears in the `report.md` summary.
-4. Run `bash scripts/check-run.sh <run>` — every referenced image exists, no raw
-   passwords, no empty template placeholders. Fix and re-run until clean.
-5. Reply to the user with the scores, top 3 issues and the folder path.
+4. Write `<run>/fix-prompt.md` by following `/fix-prompt`: a copy-paste prompt for the
+   app's maintainer AI to verify and fix every finding in priority order.
+5. Run `bash scripts/check-run.sh <run>` — every referenced image exists, no raw
+   passwords, no empty template placeholders, fix prompt present. Fix and re-run until clean.
+6. Reply to the user with the scores, top 3 issues, the folder path, and
+   "Fix prompt: `<run>/fix-prompt.md`".
