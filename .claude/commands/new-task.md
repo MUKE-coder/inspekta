@@ -6,8 +6,17 @@ argument-hint: [optional: path to a task file in tasks/]
 You are starting a **new Inspekta task**. Arguments: $ARGUMENTS
 
 ## 1. Intake
-If `$ARGUMENTS` is a path to a task file (see `tasks/examples/task.example.md`), read it.
-Otherwise collect from the user. Use the **AskUserQuestion** tool for anything missing,
+Find the brief, in this order:
+1. `$ARGUMENTS` is a path to a task file → read it.
+2. `$ARGUMENTS` (or the app directory the user gives) is a directory → if
+   `<dir>/.inspekta/task.md` exists, read it. That file is written by the project's own AI
+   using the prompt in README ("Prepare a task with your project's AI"). Trust its feature
+   map, test data, constraints and known issues. Turn its checklist and "Areas of concern"
+   into test cases, and use "Code review focus" for /code-review. Don't re-report its
+   "Known issues" as new findings; note whether they're still present.
+3. Otherwise collect everything from the user.
+
+Collect anything still missing from the user. Use the **AskUserQuestion** tool for anything missing,
 batching up to 4 questions at once:
 
 - **App name** (used for the run slug)

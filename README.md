@@ -95,6 +95,101 @@ Or prepare a task file — copy `tasks/examples/task.example.md` to `tasks/acme.
 /new-task tasks/acme.md
 ```
 
+## Prepare a task with your project's AI (recommended)
+
+The AI that builds and maintains your app (Claude Code, Cursor, etc.) already knows its
+routes, roles, seed data and features. Paste the prompt below **in the app's repo**. It
+writes `.inspekta/task.md` in the app, with everything Inspekta needs: URLs, demo
+logins, roles, a feature map and a full checklist.
+
+Then in Inspekta, just run:
+
+```
+/new-task /absolute/path/to/your-app
+```
+
+Inspekta finds `<app>/.inspekta/task.md` on its own and only asks about what's missing.
+
+### Copy-paste prompt
+
+````text
+You are preparing this project for Inspekta, an AI agent that will (1) log into the LIVE
+app in a real browser with demo accounts, test it against a checklist and review its
+UI/UX, and (2) do a senior code review of this codebase. Inspekta runs separately and
+knows nothing about this project, so your file is its only briefing.
+
+Investigate the codebase first (routes/pages, API endpoints, auth and roles, seeders,
+env/config, README, .grit/project-profile.md if present, recent git history). Don't
+guess. If something can't be found (e.g. the live URL or a password), ask me instead
+of inventing it.
+
+Then create `.inspekta/task.md` at the repo root, and add `.inspekta/` to .gitignore
+(the file contains demo credentials and must never be committed). Use exactly this
+structure:
+
+# Inspekta task — <App name>
+
+## 1. Basics
+- **App name:**
+- **App directory:** <absolute path of this repo on this machine>
+- **Live URL:**
+- **Sign-in URL:**
+- **Other surfaces:** <admin panel URL, API base URL, docs/Swagger URL, if any>
+- **Framework / stack:** <e.g. Grit v3 triple — Go/Gin/GORM API, Next.js web, admin>
+- **Scope:** both   <!-- both | qa | code -->
+
+## 2. Demo credentials
+| Role | Email / username | Password | What this role can do |
+|------|------------------|----------|-----------------------|
+<one row per role. Demo/seed accounts ONLY, never a real person's account.
+If seed accounts don't exist on the live app, tell me so I can create them.>
+
+- **2FA / CAPTCHA / email verification on login?** <yes/no + details>
+- **Sign-up flow exists?** <yes/no; may Inspekta create a test account? ask me>
+
+## 3. Feature map
+For each main area: name, URL path, which roles can see it, and what a user does there.
+| Area | Path | Roles | Key actions |
+|------|------|-------|-------------|
+
+## 4. Test data
+- Records that already exist and are safe to view/edit (e.g. "Client: Acme Demo"):
+- Data Inspekta may CREATE (and how to name it, e.g. prefix "INSPEKTA-TEST"):
+- Sample files for uploads, if needed (paths):
+- Sandbox/test payment details, if payments exist (test mode only):
+
+## 5. Constraints (off-limits)
+<e.g. don't delete seed records, don't send real emails/SMS, don't touch billing,
+don't change the admin password, rate limits, environments to avoid>
+
+## 6. Known issues / recent changes
+<things already known broken (so they aren't re-reported as new), and features
+changed recently that deserve extra attention>
+
+## 7. Checklist
+Write a thorough, testable checklist grouped by area. Each item is one observable check
+with the role to use, e.g. "- [ ] (admin) Create a client with all fields → appears at
+top of list with success toast". Cover:
+- Auth: login per role, wrong password, logout, session persistence, password reset
+  page, protected routes redirect when logged out
+- Every main feature from the feature map: create / read / update / delete, search,
+  filter, sort, pagination, exports/downloads, uploads
+- Permissions: each lower role CANNOT see or do admin-only things (UI and direct URL)
+- Forms: required fields, validation messages, invalid input, double-submit
+- States: loading, empty (e.g. search with no results), error, success
+- UI: colours/theme (light & dark if supported), responsive/mobile, consistency
+- Anything risky in the code you noticed while investigating (fragile logic,
+  missing checks): list it as "Areas of concern" so Inspekta tests it harder
+
+## 8. Code review focus
+- Main directories (api / web / admin / packages):
+- How to run lint/typecheck/tests locally (exact commands):
+- Areas you consider risky or messy:
+
+When done, show me the file path, a summary (number of roles, areas, checklist items)
+and anything you couldn't determine and need from me.
+````
+
 Other commands: `/qa`, `/code-review`, `/report` (each defaults to the newest run).
 
 ## Scoring
