@@ -5,7 +5,8 @@ argument-hint: [run folder]
 
 Load `inspekta-report`. Run folder: $ARGUMENTS (default: newest in `runs/`).
 
-1. Run `bash scripts/collect-evidence.sh <run>` one last time.
+1. Run `bash scripts/collect-evidence.sh <run>` one last time, then delete staged upload
+   fixtures: `rm -f .playwright-out/fixtures/*`.
 1b. **Verify the cleanup ledger.** For every `PENDING` row in `<run>/created.md`: delete it
    (as described in `inspekta-qa`, "Test data") or confirm it's already gone, and set `DELETED` with
    how you verified it. If it can't be removed, set `RESIDUE` with the reason and make sure there's a

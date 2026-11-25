@@ -55,6 +55,58 @@ On the **first** such timeout, don't retry the same call. Instead:
 If the same app needs this repeatedly, note it in `knowledge/apps/<app>.md` so the next
 run uses the fallback straight away.
 
+## Browser recipes
+
+### Filling React-controlled inputs and selects
+Use `browser_type` / `browser_select_option` first. If a value "doesn't stick" (form
+submits empty, validation says required), React is ignoring a plain `el.value = …`. Set it
+through the native setter and fire the event React listens to:
+```js
+() => {
+  const setValue = (el, v) => {
+    const proto = el instanceof HTMLSelectElement ? HTMLSelectElement.prototype
+                : el instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype
+                : HTMLInputElement.prototype;
+    Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, v);
+    el.dispatchEvent(new Event(el instanceof HTMLSelectElement ? 'change' : 'input', { bubbles: true }));
+  };
+  // <select>: option values are often IDs, not the visible label. Match on the label text.
+  const pick = (sel, label) => {
+    const opt = [...sel.options].find(o => o.textContent.trim() === label);
+    if (!opt) throw new Error('no option ' + label);
+    setValue(sel, opt.value);
+  };
+  setValue(document.querySelector('input[name="email"]'), 'teacher@example.com');
+  pick(document.querySelector('select[name="class"]'), 'P5 Blue');
+  document.querySelector('form').requestSubmit();
+}
+```
+Radix/shadcn `<Select>` isn't a native select. Open its trigger (click, or focus +
+`Enter`), then click the option by its role/name from a fresh snapshot.
+Log `(filled via evaluate)` on the action-log row.
+
+### Short sessions and re-login
+Some apps expire sessions hard (e.g. 15 minutes, no refresh). Expect it:
+- At intake, check `knowledge/apps/<app>.md` for the session length. If it's unknown, notice
+  the first bounce to the login page and record it there.
+- **Plan each role's block to fit inside one session**: group its checks and do the slow
+  ones (uploads, long forms) first.
+- **First login per role is always a real, typed login** (that's part of the test).
+  For **re-logins after expiry**, use the native-setter recipe above to fill the same
+  form, then `requestSubmit()`. Log a `NOTE` row ("session expired, re-logged in") and
+  continue from the step that was interrupted (re-check it, don't assume it succeeded).
+- A hard expiry with no warning or "keep me signed in", and lost form data on expiry, are
+  UX observations for the report (UX-S). Not every re-login is a bug.
+
+### File uploads: fixtures must live under the project
+`browser_file_upload` only accepts paths **inside the Inspekta folder**. Files in a temp or
+scratch folder are refused ("outside allowed roots"). So:
+- Stage fixtures in `.playwright-out/fixtures/` (created by `new-run.sh`, gitignored, and never
+  moved into evidence). Copy the task's sample files there, or generate small ones
+  (a tiny CSV, a 1-page PDF, a 10×10 PNG). Use generic content, not real people's data.
+- Pass the absolute path to `browser_file_upload`.
+- Delete the staged fixtures when the run ends (`/report` does this).
+
 ## Tool errors are not app defects
 An automation error describes **the tool's model of the page**, not what a user
 experiences. Never turn one into a finding directly. Before any related finding reaches

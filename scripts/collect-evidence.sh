@@ -16,6 +16,6 @@ if [ -d "$SRC" ]; then
     dest="$RUN/evidence/$(basename "$f")"
     [ -e "$dest" ] && dest="$RUN/evidence/$(date +%H%M%S)-$(basename "$f")"
     mv "$f" "$dest"; moved=$((moved+1))
-  done < <(find "$SRC" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webm' -o -iname '*.zip' \) -print0)
+  done < <(find "$SRC" -path "$SRC/fixtures" -prune -o -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webm' -o -iname '*.zip' \) -print0)
 fi
 echo "moved $moved file(s) into $RUN/evidence ($(find "$RUN/evidence" -type f | wc -l | tr -d ' ') total)"

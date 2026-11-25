@@ -23,5 +23,5 @@ for f in report.md code-review.md action-log.md task.md improvements.md created.
       "$ROOT/templates/$f" > "$RUN/$f"
 done
 
-mkdir -p "$ROOT/.playwright-out"
+mkdir -p "$ROOT/.playwright-out/fixtures"
 echo "$RUN"
