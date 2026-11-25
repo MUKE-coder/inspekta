@@ -23,6 +23,7 @@ done
 
 ok=0; failed=()
 while IFS= read -r line || [ -n "$line" ]; do
+  line="${line//$'\r'/}"                 # strip Windows CR (CRLF checkouts)
   line="${line%%#*}"                       # strip comments
   read -r source rest <<<"$line" || true
   [ -z "${source:-}" ] && continue

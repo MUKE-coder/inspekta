@@ -1,0 +1,5 @@
+# Keep shell scripts and config with LF endings on every OS (Windows Git Bash included)
+*.sh        text eol=lf
+skills.txt  text eol=lf
+*.md        text eol=lf
+*.json      text eol=lf
