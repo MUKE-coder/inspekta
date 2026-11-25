@@ -47,6 +47,35 @@ Grill once (grill-me style) on genuine ambiguities in the checklist — e.g. "'c
 payments' — test with a sandbox card or only check the UI up to the pay button?".
 Don't ask what you can find out by looking.
 
+## 1b. Browser preflight (before anything else is set up)
+Skip only if scope is `code`. For **every distinct browser** the task uses (the default
+plus any per-role overrides):
+
+1. Open a new tab with that server (`mcp__chrome__browser_tabs` / `mcp__edge__…` /
+   `mcp__cdp__…`) and `browser_navigate` to the first login site that browser will use.
+2. Take a snapshot and confirm the page loaded (sign-in form visible, not an error page).
+3. If any role on this browser signs in with **Google/SSO**, check that the named account
+   is available: open `https://accounts.google.com/AccountChooser` **read-only** and look for
+   the email (don't click anything there).
+4. Report one line per browser: `chrome (Work profile) ✓ login page loaded · Google account found`.
+
+If a browser fails (extension not installed **in that profile**, not approved, port not
+listening, page blocked):
+- Retry once (for `chrome`/`edge`, ask the user to click the Playwright Extension icon *in
+  the profile the task names* and approve).
+- Still failing: tell the user exactly what failed and offer the fallback with its cost.
+  Use AskUserQuestion with options such as:
+  - "Fix it and retry" (e.g. install the extension in that profile)
+  - "Use `cdp` instead": `bash scripts/launch-browser.sh <browser> <profile>`. Fine when
+    no role needs an existing session. **If a role uses Google/SSO**, say that the user
+    must first sign that Google account into the new `cdp` window.
+  - "Skip these roles": test the others and mark these roles BLOCKED.
+- Never switch browsers without the user's answer. Record the outcome in `task.md`
+  (and, if anything went wrong, in `improvements.md`).
+
+Only continue to step 2 once every browser the task needs is confirmed or the user has
+chosen a fallback.
+
 ## 2. Set up the run
 ```bash
 bash scripts/new-run.sh "<app-slug>"

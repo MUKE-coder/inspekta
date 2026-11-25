@@ -78,12 +78,18 @@ the task file says which one to use: a default, plus optional overrides per role
 
 | Task value | Use when | Setup |
 |---|---|---|
-| `chrome` | Your normal Chrome | Install the **Playwright Extension** (Playwright MCP Bridge; see [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp)) in Chrome and approve it on first connect |
+| `chrome` | Your normal Chrome (the profile that has the extension) | Install the **Playwright Extension** (Playwright MCP Bridge; see [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp)) in Chrome and approve it on first connect |
 | `chrome:<profile>` | A specific Chrome profile (e.g. `chrome:Work`) | Install the extension **in that profile**. When Inspekta connects, approve from that profile's window |
 | `edge` / `edge:<profile>` | Microsoft Edge | Install the same extension in Edge (it accepts Chrome Web Store extensions) |
 | `cdp` / `cdp:9222` | Brave, Vivaldi, Chromium, Chrome Beta, or a **dedicated Inspekta profile** | Run `bash scripts/launch-browser.sh brave myprofile` (or `chrome`, `edge`…), sign into your demo/Google accounts in that window once, and it stays signed in |
 
 Notes:
+- **The extension must be installed in the exact profile the task uses**, not just
+  somewhere on the machine. Chrome extensions are per profile. Inspekta checks this
+  during intake (the browser preflight) and offers `cdp` as a fallback if it fails.
+  `cdp` gives an equivalent clean session, which is fine unless a role relies on an existing
+  signed-in session (e.g. Google sign-in). In that case, sign that account into the
+  `cdp` window first.
 - Chrome 136+ blocks debugging ports on your **main** profile, which is why `chrome` and `edge`
   go through the extension, and `cdp` uses a separate profile folder (`~/.inspekta/profiles/`).
 - Firefox and Safari can't share a real session through Playwright MCP. Use a Chromium

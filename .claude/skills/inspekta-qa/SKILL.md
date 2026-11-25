@@ -44,6 +44,9 @@ the browser servers in `.mcp.json` (the tools are prefixed `mcp__<server>__`):
   for one, say so and suggest a Chromium browser or a `cdp` testing profile.
 - If the requested browser server won't connect after one retry, stop and ask. Don't
   quietly switch to another browser; its session (cookies, Google account) is different.
+- Connection problems should already have shown up in the **browser preflight**
+  (`/new-task` step 1b). If you're mid-run and a browser stops answering, use the same
+  options: retry once, then ask (fix and retry / `cdp` fallback / skip the affected roles).
 
 ## Roles & login sites
 Many apps have several roles (admin, headteacher, teacher, parent…) and several login
